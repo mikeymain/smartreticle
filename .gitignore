@@ -5,3 +5,4 @@ prototype-csharp/bin/
 *.log
 .DS_Store
 Thumbs.db
+design/

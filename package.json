@@ -7,7 +7,7 @@
   "scripts": {
     "start": "electron .",
     "test": "node --test \"test/*.test.cjs\"",
-    "package": "electron-packager . SmartReticle --platform=win32 --arch=x64 --out=dist --overwrite --prune=true --ignore=\"^/(dist|prototype-csharp|tests|test|bin|scripts)($|/)\"",
+    "package": "electron-packager . SmartReticle --platform=win32 --arch=x64 --icon=assets/smartreticle.ico --out=dist --overwrite --prune=true --ignore=\"^/(dist|design|prototype-csharp|tests|test|bin|scripts)($|/)\"",
     "snapshot": "electron scripts/snapshot.cjs snapshots"
   },
   "dependencies": {

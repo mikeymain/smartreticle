@@ -126,23 +126,9 @@ if (!app.requestSingleInstanceLock()) {
 
   // ---- tray -------------------------------------------------------------
 
-  // A small lime reticle, drawn into a BGRA buffer so the app ships no image files.
   function appIcon(size) {
-    const buf = Buffer.alloc(size * size * 4);
-    const c = (size - 1) / 2, r = size * 0.34, w = Math.max(1.5, size / 16);
-    for (let y = 0; y < size; y++) {
-      for (let x = 0; x < size; x++) {
-        const dx = x - c, dy = y - c, d = Math.hypot(dx, dy);
-        const ring = Math.abs(d - r) <= w;
-        const arm = (Math.abs(dx) <= w / 1.3 || Math.abs(dy) <= w / 1.3) && d > r * 0.35 && d < size * 0.48;
-        const dot = d <= w;
-        if (ring || arm || dot) {
-          const i = (y * size + x) * 4;
-          buf[i] = 0x3b; buf[i + 1] = 0xff; buf[i + 2] = 0xb6; buf[i + 3] = 0xff; // #b6ff3b as BGRA
-        }
-      }
-    }
-    return nativeImage.createFromBitmap(buf, { width: size, height: size });
+    return nativeImage.createFromPath(path.join(__dirname, 'assets', 'smartreticle.png'))
+      .resize({ width: size, height: size });
   }
 
   function refreshTray() {
