@@ -281,12 +281,6 @@ function initDetectionTab() {
 
 // ---- status + troubleshooting --------------------------------------------------------
 
-function initStatus() {
-  $('debug-log').addEventListener('change', (e) => setDetection({ debugLog: e.target.checked }));
-  $('open-log').addEventListener('click', () => api.openLog());
-  syncers.push(() => { $('debug-log').checked = S.detection.debugLog; });
-}
-
 // ---- app tab -----------------------------------------------------------------------
 
 function initAppTab() {
@@ -313,7 +307,6 @@ async function start() {
   initTabs();
   initCrosshairTab();
   initDetectionTab();
-  initStatus();
   initAppTab();
   $('enabled').addEventListener('change', (e) => commit({ ...S, enabled: e.target.checked }));
   syncers.push(() => { $('enabled').checked = S.enabled; });
