@@ -31,19 +31,23 @@ html, body { margin: 0; min-height: 100vh; }
 button, input, select { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 
-/* Field: a faint range grid with a vignette, static so it never distracts. */
+/* Field: plain charcoal with a soft vignette. */
 .backdrop { position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background:
-    radial-gradient(120% 90% at 50% 0%, transparent 40%, rgba(0, 0, 0, .55) 100%),
-    linear-gradient(rgba(182, 255, 59, .035) 1px, transparent 1px) 0 0 / 32px 32px,
-    linear-gradient(90deg, rgba(182, 255, 59, .035) 1px, transparent 1px) 0 0 / 32px 32px,
-    var(--bg); }
-.svg-defs { display: none; }
+  background: radial-gradient(120% 90% at 50% 0%, transparent 40%, rgba(0, 0, 0, .55) 100%), var(--bg); }
+
+/* Browser surfaces carry the palette too. */
+::selection { background: rgba(182, 255, 59, .35); color: #fff; }
+input, select { caret-color: var(--lime); }
+input[type="number"], .key-capture, .num .unit { font-variant-numeric: tabular-nums; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--line-2); border: 2px solid var(--bg); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--line-3); }
 
 .shell { width: min(100% - 44px, 1140px); margin: 0 auto; padding: 24px 0 40px; }
 
 /* ---- panels: hairline box + lime corner brackets ---- */
-.card, .glass { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); }
+.card { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); }
 .card { padding: 20px 22px; }
 .card::before, .card::after { content: ""; position: absolute; width: 12px; height: 12px; pointer-events: none; border-color: var(--lime-line); border-style: solid; }
 .card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
@@ -203,7 +207,6 @@ button:focus-visible, .chip:focus-visible { outline: 2px solid var(--lime); outl
 .key-capture:active { transform: translateY(1px); border-bottom-width: 2px; }
 .key-capture.listening { color: var(--lime); border-color: var(--lime); animation: blink 1s steps(2) infinite; }
 
-.log-row { display: flex; align-items: center; justify-content: space-between; }
 
 /* ---- setup strip ---- */
 .setup-card { grid-column: 1 / -1; }

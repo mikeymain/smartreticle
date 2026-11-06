@@ -1,6 +1,5 @@
-const { app, BrowserWindow, ipcMain, screen, Tray, Menu, nativeImage, clipboard, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, Tray, Menu, nativeImage, clipboard } = require('electron');
 const path = require('node:path');
-const fs = require('node:fs');
 const store = require('./engine/settings.cjs');
 const { VisibilityGate, parseCombo, ComboWatcher } = require('./engine/logic.cjs');
 const { createLog } = require('./engine/log.cjs');
@@ -51,7 +50,7 @@ if (!app.requestSingleInstanceLock()) {
     mainWindow = new BrowserWindow({
       width: 1120, height: 760, minWidth: 940, minHeight: 640, show: false,
       backgroundColor: '#0b0d0e', title: 'SmartReticle', icon: appIcon(64), autoHideMenuBar: true,
-      webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false }
+      webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true }
     });
     mainWindow.setMenu(null);
     mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
@@ -71,7 +70,7 @@ if (!app.requestSingleInstanceLock()) {
       frame: false, transparent: true, resizable: false, movable: false, hasShadow: false,
       skipTaskbar: true, alwaysOnTop: true, focusable: false, show: false,
       webPreferences: {
-        preload: path.join(__dirname, 'overlay-preload.cjs'), contextIsolation: true, nodeIntegration: false,
+        preload: path.join(__dirname, 'overlay-preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true,
         backgroundThrottling: false
       }
     });
@@ -228,15 +227,15 @@ if (!app.requestSingleInstanceLock()) {
     ipcMain.handle('games:running', () => {
       try { return win.windowedProcessNames(); } catch (error) { log('Window list failed: ' + error.message); return []; }
     });
-    ipcMain.handle('log:open', async () => {
-      if (!fs.existsSync(logFile())) log('Log opened. Turn on "Write debug log" to record detection changes.');
-      return shell.openPath(logFile());
-    });
   }
 
   // ---- start ------------------------------------------------------------
 
-  app.on('second-instance', showMainWindow);
+  // The app only ever shows its own two local pages: no popups, no navigation away.
+  app.on('web-contents-created', (_e, contents) => {
+    contents.setWindowOpenHandler(() => ({ action: 'deny' }));
+    contents.on('will-navigate', (e) => e.preventDefault());
+  });  app.on('second-instance', showMainWindow);
   app.on('before-quit', () => {
     quitting = true;
     clearTimeout(saveTimer);

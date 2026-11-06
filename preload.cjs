@@ -12,6 +12,5 @@ contextBridge.exposeInMainWorld('reticle', {
   copyShareCode: (crosshair) => ipcRenderer.invoke('share:copy', crosshair),
   pasteShareCode: () => ipcRenderer.invoke('share:paste'),
   runningGames: () => ipcRenderer.invoke('games:running'),
-  openLog: () => ipcRenderer.invoke('log:open'),
   onSettings: subscribe('settings:changed')
 });

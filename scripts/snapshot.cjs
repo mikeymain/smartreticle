@@ -14,6 +14,8 @@ app.whenReady().then(async () => {
   const win = BrowserWindow.getAllWindows().find(w => w.getTitle() === 'SmartReticle');
   if (!win) { console.error('Settings window not found'); app.exit(1); return; }
   win.show();
+  // SNAP_WIDTH=940 checks the narrowest allowed window.
+  if (process.env.SNAP_WIDTH) win.setContentSize(Number(process.env.SNAP_WIDTH), win.getContentSize()[1]);
   fs.mkdirSync(outDir, { recursive: true });
   for (const tab of ['crosshair', 'settings']) {
     await win.webContents.executeJavaScript(`document.querySelector('[data-tab="${tab}"]').click()`);

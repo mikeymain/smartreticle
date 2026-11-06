@@ -14,8 +14,8 @@
   <main class="shell">
     <header class="topbar">
       <nav class="tabs" id="tabs" role="tablist" aria-label="Sections">
-        <button type="button" class="tab current" role="tab" data-tab="crosshair">Crosshair</button>
-        <button type="button" class="tab" role="tab" data-tab="settings">Settings</button>
+        <button type="button" class="tab current" role="tab" id="tab-crosshair" aria-controls="pane-crosshair" aria-selected="true" data-tab="crosshair">Crosshair</button>
+        <button type="button" class="tab" role="tab" id="tab-settings" aria-controls="pane-settings" aria-selected="false" data-tab="settings">Settings</button>
       </nav>
       <label class="switch big power" title="Overlay on/off">
         <input id="enabled" type="checkbox">
@@ -25,7 +25,7 @@
     </header>
 
     <!-- Crosshair ---------------------------------------------------------->
-    <section class="pane crosshair-pane" data-pane="crosshair">
+    <section class="pane crosshair-pane" role="tabpanel" id="pane-crosshair" aria-labelledby="tab-crosshair" data-pane="crosshair">
       <div class="stack">
         <div class="card preview-card">
           <div class="preview-head">
@@ -97,7 +97,7 @@
     </section>
 
     <!-- Settings ------------------------------------------------------------->
-    <section class="pane settings-pane" data-pane="settings" hidden>
+    <section class="pane settings-pane" role="tabpanel" id="pane-settings" aria-labelledby="tab-settings" data-pane="settings" hidden>
       <div class="card setup-card">
         <div class="card-head">
           <p class="eyebrow">Division 2 setup</p>
