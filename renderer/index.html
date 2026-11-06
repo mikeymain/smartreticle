@@ -13,32 +13,16 @@
 
   <main class="shell">
     <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark glass" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none" stroke="#b6ff3b" stroke-width="2.2" stroke-linecap="round">
-            <circle cx="16" cy="16" r="9.5"/><path d="M16 2.5v7M16 22.5v7M2.5 16h7M22.5 16h7"/><circle cx="16" cy="16" r="1.4" fill="#b6ff3b" stroke="none"/>
-          </svg>
-        </div>
-        <div>
-         <h1>SmartReticle</h1>
-        </div>
-      </div>
-      <div class="topbar-right">
-        <span id="status-pill" class="status glass" aria-live="polite">Starting…</span>
-        <label class="switch big power glass" title="Overlay on/off">
-          <input id="enabled" type="checkbox">
-          <span class="track"><span class="thumb"></span></span>
-          <span class="switch-label">Overlay</span>
-        </label>
-      </div>
-    </header>
-
-    <div class="tab-slot" id="tab-slot">
       <nav class="tabs" id="tabs" role="tablist" aria-label="Sections">
         <button type="button" class="tab current" role="tab" data-tab="crosshair">Crosshair</button>
         <button type="button" class="tab" role="tab" data-tab="settings">Settings</button>
       </nav>
-    </div>
+      <label class="switch big power" title="Overlay on/off">
+        <input id="enabled" type="checkbox">
+        <span class="track"><span class="thumb"></span></span>
+        <span class="switch-label">Overlay</span>
+      </label>
+    </header>
 
     <!-- Crosshair ---------------------------------------------------------->
     <section class="pane crosshair-pane" data-pane="crosshair">

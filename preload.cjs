@@ -13,6 +13,5 @@ contextBridge.exposeInMainWorld('reticle', {
   pasteShareCode: () => ipcRenderer.invoke('share:paste'),
   runningGames: () => ipcRenderer.invoke('games:running'),
   openLog: () => ipcRenderer.invoke('log:open'),
-  onStatus: subscribe('status'),
   onSettings: subscribe('settings:changed')
 });

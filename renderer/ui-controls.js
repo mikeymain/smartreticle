@@ -127,7 +127,7 @@
     Street: ['#262d37', '#4c535d', '#6b7076'],
     Sky: ['#6fa6dc', '#a9cbea', '#e6eef5'],
     Foliage: ['#16301b', '#365233', '#5e7a46'],
-    Snow: ['#c9d3de', '#e4eaf1', '#f7f9fb']
+    White: ['#c9d3de', '#e4eaf1', '#f7f9fb']
   };
 
   function drawScene(ctx, w, h, name) {

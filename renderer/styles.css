@@ -65,29 +65,12 @@ h1 { font-size: 30px; letter-spacing: .14em; text-transform: uppercase; line-hei
 .footer-note { color: var(--ink-3); font-family: var(--font-mono); font-size: 11px; letter-spacing: .04em; text-align: center; margin: 22px 0 0; }
 
 /* ---- top bar ---- */
-.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
-.topbar-right { display: flex; align-items: center; gap: 12px; }
-.brand { display: flex; align-items: center; gap: 14px; }
-.brand .eyebrow { margin: 0 0 7px; font-size: 10.5px; }
-.brand .eyebrow::before { display: none; }
-.brand-mark { width: 46px; height: 46px; display: grid; place-items: center; background: var(--panel-2); border: 1px solid var(--line-2); border-radius: var(--r); }
-.brand-mark svg { width: 26px; height: 26px; }
-.brand-mark svg * { stroke: var(--lime); }
-.brand-mark svg circle[fill] { fill: var(--lime); }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 16px; margin-bottom: 18px; border-bottom: 1px solid var(--line); }
 
-.status { display: inline-flex; align-items: center; gap: 9px; border: 1px solid var(--line-2); border-radius: var(--r); background: var(--panel); color: var(--ink-2);
-  font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 0 13px; min-height: 38px; white-space: nowrap; }
-.status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); flex: none; }
-.status.live { color: var(--lime); border-color: var(--lime-line); }
-.status.live::before { background: var(--lime); animation: blink 1.6s steps(2) infinite; }
-.status.hidden-state { color: var(--amber); }
-.status.hidden-state::before { background: var(--amber); }
-.status.off { color: var(--ink-3); }
 @keyframes blink { 50% { opacity: .35; } }
 .power { display: inline-flex; align-items: center; border: 1px solid var(--line-2); border-radius: var(--r); background: var(--panel); padding: 0 12px 0 10px; min-height: 38px; }
 
 /* ---- tabs: bracketed labels, lime fill on the active one ---- */
-.tab-slot { margin: 16px 0 18px; }
 .tabs { display: inline-flex; gap: 6px; }
 .tab { position: relative; background: transparent; border: 1px solid transparent; border-radius: var(--r); color: var(--ink-3); cursor: pointer;
   font-size: 13px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; min-height: 40px; padding: 0 22px; transition: color .15s, border-color .15s, background .15s; }
@@ -226,7 +209,7 @@ button:focus-visible, .chip:focus-visible { outline: 2px solid var(--lime); outl
 .steps li strong:first-child { display: block; color: var(--ink); font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 3px; }
 .steps li::before { content: counter(step, decimal-leading-zero); position: absolute; left: 14px; top: 11px; font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: var(--lime); }
 
-@media (prefers-reduced-motion: reduce) { .pane, .status.live::before, .key-capture.listening { animation: none; } * { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .pane, .key-capture.listening { animation: none; } * { transition: none !important; } }
 @media (max-width: 1000px) {
   .crosshair-pane, .settings-pane { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr; }

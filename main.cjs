@@ -11,7 +11,6 @@ app.commandLine.appendSwitch('disable-renderer-backgrounding');
 app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
 
 const TICK_MS = 16;
-const STATUS_MS = 200;
 const OVERLAY_DIP = 400;        // overlay window edge; the crosshair is drawn inside it at the exact device pixel
 const TOPMOST_EVERY_MS = 1000;  // borderless games can be topmost too
 
@@ -36,7 +35,6 @@ if (!app.requestSingleInstanceLock()) {
   let saveTimer = null;
   let toggleKey = null;
   let aimCodes = null;
-  let lastExternal = null;
   let lastLogged = '';
   let overlayState = { visible: false, key: '' };
   let lastTopmost = 0;
@@ -201,7 +199,6 @@ if (!app.requestSingleInstanceLock()) {
     const aiming = !!aimCodes && aimCodes.every(readKey);
 
     const r = detector.evaluate(settings.detection, aiming);
-    if (!r.own) lastExternal = r;
     if (settings.detection.forceBorderless && r.window) borderless.tryApply(r.window);
 
     const visible = gate.update(settings.enabled && r.show, settings.detection.showDelayMs, Date.now());
@@ -213,10 +210,6 @@ if (!app.requestSingleInstanceLock()) {
     }
   }
 
-  function pushStatus() {
-    if (!alive(mainWindow) || !mainWindow.isVisible()) return;
-    mainWindow.webContents.send('status', { enabled: settings.enabled, visible: overlayState.visible, detection: lastExternal });
-  }
 
   // ---- IPC --------------------------------------------------------------
 
@@ -265,6 +258,5 @@ if (!app.requestSingleInstanceLock()) {
     setInterval(() => {
       try { tick(); } catch (error) { log('Tick failed: ' + (error.stack || error.message)); }
     }, TICK_MS);
-    setInterval(pushStatus, STATUS_MS);
   });
 }

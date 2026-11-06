@@ -282,24 +282,9 @@ function initDetectionTab() {
 // ---- status + troubleshooting --------------------------------------------------------
 
 function initStatus() {
-  api.onStatus(({ enabled, visible, detection }) => renderPill(enabled, visible, detection));
   $('debug-log').addEventListener('change', (e) => setDetection({ debugLog: e.target.checked }));
   $('open-log').addEventListener('click', () => api.openLog());
   syncers.push(() => { $('debug-log').checked = S.detection.debugLog; });
-}
-
-function renderPill(enabled, visible, d) {
-  const pill = $('status-pill');
-  let text, cls;
-  if (!enabled) { text = 'Off'; cls = 'off'; }
-  else if (visible) { text = 'On screen'; cls = 'live'; }
-  else if (!d || !d.window) { text = 'Waiting for game'; cls = ''; }
-  else if (/^menu/.test(d.reason)) { text = 'Hidden · menu'; cls = 'hidden-state'; }
-  else if (/^aiming/.test(d.reason)) { text = 'Hidden · aiming'; cls = 'hidden-state'; }
-  else if (/^not aiming/.test(d.reason)) { text = 'Hidden · hip-fire'; cls = 'hidden-state'; }
-  else { text = 'In game'; cls = 'live'; }
-  pill.textContent = text;
-  pill.className = 'status ' + cls;
 }
 
 // ---- app tab -----------------------------------------------------------------------
@@ -334,7 +319,6 @@ async function start() {
   syncers.push(() => { $('enabled').checked = S.enabled; });
   api.onSettings((next) => { S = next; syncAll(); });
   syncAll();
-  renderPill(S.enabled, false, null);
 }
 
 start();
