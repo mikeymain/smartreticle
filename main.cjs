@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, screen, Tray, Menu, nativeImage, clipboard } = require('electron');
 const path = require('node:path');
 const store = require('./engine/settings.cjs');
-const { VisibilityGate, parseCombo, ComboWatcher } = require('./engine/logic.cjs');
+const { VisibilityGate, parseCombo, ComboWatcher, nextTickMs } = require('./engine/logic.cjs');
 const { createLog } = require('./engine/log.cjs');
 
 // The overlay must keep painting while the game, not us, has focus.
@@ -9,7 +9,6 @@ app.commandLine.appendSwitch('disable-features', 'CalculateNativeWinOcclusion');
 app.commandLine.appendSwitch('disable-renderer-backgrounding');
 app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
 
-const TICK_MS = 16;
 const OVERLAY_DIP = 400;        // overlay window edge; the crosshair is drawn inside it at the exact device pixel
 const TOPMOST_EVERY_MS = 1000;  // borderless games can be topmost too
 
@@ -30,7 +29,6 @@ if (!app.requestSingleInstanceLock()) {
   let overlay = null;
   let overlayHwnd = 0;
   let tray = null;
-  let quitting = false;
   let saveTimer = null;
   let toggleKey = null;
   let aimCodes = null;
@@ -46,21 +44,23 @@ if (!app.requestSingleInstanceLock()) {
 
   // ---- windows ----------------------------------------------------------
 
-  function createMainWindow(show) {
-    mainWindow = new BrowserWindow({
+  // Built on demand and destroyed on close, so its renderer process only exists while the window is open.
+  function createMainWindow() {
+    const w = new BrowserWindow({
       width: 1120, height: 760, minWidth: 940, minHeight: 640, show: false,
       backgroundColor: '#0b0d0e', title: 'SmartReticle', icon: appIcon(64), autoHideMenuBar: true,
       webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true }
     });
-    mainWindow.setMenu(null);
-    mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
-    if (show) mainWindow.once('ready-to-show', () => mainWindow.show());
+    w.setMenu(null);
+    w.loadFile(path.join(__dirname, 'renderer', 'index.html'));
+    w.once('ready-to-show', () => w.show());
     // Closing keeps the overlay running from the tray; Quit is in the tray menu.
-    mainWindow.on('close', (e) => { if (!quitting) { e.preventDefault(); mainWindow.hide(); } });
+    w.on('closed', () => { if (mainWindow === w) mainWindow = null; });
+    mainWindow = w;
   }
 
   function showMainWindow() {
-    if (!alive(mainWindow)) createMainWindow(true);
+    if (!alive(mainWindow)) createMainWindow();
     else { mainWindow.show(); if (mainWindow.isMinimized()) mainWindow.restore(); mainWindow.focus(); }
   }
 
@@ -139,7 +139,7 @@ if (!app.requestSingleInstanceLock()) {
       { label: 'Open SmartReticle', click: showMainWindow },
       { label: 'Overlay enabled', type: 'checkbox', checked: settings.enabled, click: () => setEnabled(!settings.enabled) },
       { type: 'separator' },
-      { label: 'Quit', click: () => { quitting = true; app.quit(); } }
+      { label: 'Quit', click: () => app.quit() }
     ]));
   }
 
@@ -178,10 +178,10 @@ if (!app.requestSingleInstanceLock()) {
 
   // ---- loop -------------------------------------------------------------
 
+  /** @returns {boolean} true while a target game is focused */
   function tick() {
-    const readKey = win.keyDown;
-    if (toggleKey && toggleKey.pressed(readKey)) setEnabled(!settings.enabled);
-    const aiming = !!aimCodes && aimCodes.every(readKey);
+    if (toggleKey && toggleKey.pressed(win.keyHit)) setEnabled(!settings.enabled);
+    const aiming = !!aimCodes && aimCodes.every(win.keyDown);
 
     const r = detector.evaluate(settings.detection, aiming);
     if (settings.detection.forceBorderless && r.window) borderless.tryApply(r.window);
@@ -193,6 +193,13 @@ if (!app.requestSingleInstanceLock()) {
       const key = [r.show, r.reason, r.process, r.cursorShown, r.softMenu, r.aiming, settings.enabled].join('|');
       if (key !== lastLogged) { log((settings.enabled ? '' : '[disabled] ') + describe(r)); lastLogged = key; }
     }
+    return Boolean(r.window);
+  }
+
+  function loop() {
+    let gameFocused = false;
+    try { gameFocused = tick(); } catch (error) { log('Tick failed: ' + (error.stack || error.message)); }
+    setTimeout(loop, nextTickMs({ gameFocused, visible: overlayState.visible }));
   }
 
 
@@ -223,7 +230,6 @@ if (!app.requestSingleInstanceLock()) {
     contents.on('will-navigate', (e) => e.preventDefault());
   });  app.on('second-instance', showMainWindow);
   app.on('before-quit', () => {
-    quitting = true;
     clearTimeout(saveTimer);
     try { store.save(settingsFile(), settings); } catch { /* best effort on the way out */ }
   });
@@ -239,9 +245,7 @@ if (!app.requestSingleInstanceLock()) {
     applySettings();
     createOverlay();
     const startHidden = process.argv.includes('--minimized') || settings.app.startMinimized;
-    createMainWindow(!startHidden);
-    setInterval(() => {
-      try { tick(); } catch (error) { log('Tick failed: ' + (error.stack || error.message)); }
-    }, TICK_MS);
+    if (!startHidden) createMainWindow();
+    loop();
   });
 }

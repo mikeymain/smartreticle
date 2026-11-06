@@ -45,7 +45,7 @@ It never injects into or reads the game's memory. Check the game's rules anyway.
 
 | Path | What |
 |---|---|
-| `main.cjs` | Windows, tray, the 60 Hz detection loop, IPC |
+| `main.cjs` | Windows, tray, the detection loop (60 Hz while the game is focused, 20 Hz otherwise), IPC. The settings window is created when opened and destroyed when closed. |
 | `engine/` | `win32.cjs` (koffi bindings), `detector.cjs`, `borderless.cjs`, `logic.cjs` (pure rules), `settings.cjs`, `log.cjs` |
 | `renderer/` | Settings UI (`index.html`, `app.js`, `ui-controls.js`, `styles.css`), click-through overlay (`overlay.html/js`), and `crosshair-draw.js`, which both share |
 | `test/` | `npm test`: 20 `node --test` cases |

@@ -19,10 +19,26 @@ const crosshair = () => (S.profiles.find(p => p.id === S.activeProfile) || S.pro
 
 // ---- immutable updates -----------------------------------------------------
 
+// Slider drags fire many input events per frame; send only the latest settings once per frame and
+// repaint once per frame. S itself is always updated immediately.
+let pendingSend = null;
+let syncQueued = false;
+function flushSend() {
+  const next = pendingSend;
+  pendingSend = null;
+  if (next) api.setSettings(next);
+}
+function queueSync() {
+  if (syncQueued) return;
+  syncQueued = true;
+  requestAnimationFrame(() => { syncQueued = false; flushSend(); syncAll(); });
+}
+// The window is destroyed on close; send the last queued change before it goes.
+window.addEventListener('pagehide', flushSend);
 function commit(next) {
   S = next;
-  api.setSettings(next);
-  syncAll();
+  pendingSend = next;
+  queueSync();
 }
 const setCross = (patch) => commit({
   ...S,
@@ -32,6 +48,12 @@ const setDetection = (patch) => commit({ ...S, detection: { ...S.detection, ...p
 const setApp = (patch) => commit({ ...S, app: { ...S.app, ...patch } });
 
 function syncAll() { for (const fn of syncers) fn(); }
+
+// Rebuild a list of DOM nodes only when its key changes, not on every slider tick.
+function whenChanged(keyOf, rebuild) {
+  let last = null;
+  return () => { const k = keyOf(); if (k !== last) { last = k; rebuild(); } };
+}
 
 // ---- tabs -------------------------------------------------------------------
 
@@ -67,6 +89,8 @@ function chipGroup(container, items, isCurrent, onPick) {
   return () => buttons.forEach(({ b, item }) => b.classList.toggle('current', isCurrent(item.value)));
 }
 
+const stamp = document.createElement('canvas'); // reused every redraw instead of allocating a canvas per frame
+
 function drawPreview() {
   const canvas = $('preview');
   const dpr = window.devicePixelRatio || 1;
@@ -80,8 +104,8 @@ function drawPreview() {
   const c = crosshair();
   const e = window.Crosshair.extent(c);
   const size = e * 2 + 1;
-  const off = document.createElement('canvas');
-  off.width = size; off.height = size;
+  const off = stamp;
+  off.width = size; off.height = size; // resizing also clears it
   window.Crosshair.draw(off.getContext('2d'), c, e, e);
   const z = view.zoom; // 1 = true size: one crosshair pixel per screen pixel
   ctx.imageSmoothingEnabled = false;
@@ -179,7 +203,7 @@ function initProfiles() {
   name.addEventListener('input', () => commit({
     ...S, profiles: S.profiles.map(p => (p.id === S.activeProfile ? { ...p, name: name.value || 'Untitled' } : p))
   }));
-  syncers.push(() => {
+  syncers.push(whenChanged(() => S.activeProfile + '|' + S.profiles.map(p => p.id + ':' + p.name).join('|'), () => {
     box.replaceChildren();
     for (const p of S.profiles) {
       const pick = el('button', { type: 'button', class: 'chip' + (p.id === S.activeProfile ? ' current' : ''), text: p.name,
@@ -200,7 +224,7 @@ function initProfiles() {
     } }));
     const active = S.profiles.find(p => p.id === S.activeProfile);
     if (document.activeElement !== name) name.value = active ? active.name : '';
-  });
+  }));
 }
 
 function initPresets() {
@@ -230,7 +254,7 @@ function initDetectionTab() {
     if (!name || S.detection.games.some(g => g.toLowerCase() === name.toLowerCase())) return;
     setDetection({ games: [...S.detection.games, name] });
   };
-  syncers.push(() => {
+  syncers.push(whenChanged(() => S.detection.games.join('|'), () => {
     chips.replaceChildren();
     if (!S.detection.games.length) chips.append(el('span', { class: 'hint-inline', text: 'Add a game.' }));
     for (const g of S.detection.games) {
@@ -240,7 +264,7 @@ function initDetectionTab() {
           onclick: () => setDetection({ games: S.detection.games.filter(x => x !== g) }) })
       ]));
     }
-  });
+  }));
   const input = $('game-input');
   $('game-add').addEventListener('click', () => { addGame(input.value); input.value = ''; });
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { addGame(input.value); input.value = ''; } });
@@ -310,7 +334,13 @@ async function start() {
   initAppTab();
   $('enabled').addEventListener('change', (e) => commit({ ...S, enabled: e.target.checked }));
   syncers.push(() => { $('enabled').checked = S.enabled; });
-  api.onSettings((next) => { S = next; syncAll(); });
+  // Main echoes only the hotkey/tray on-off switch. Keep a queued edit, but with the echoed switch, so the
+  // queued send cannot revert it.
+  api.onSettings((next) => {
+    S = pendingSend ? { ...pendingSend, enabled: next.enabled } : next;
+    if (pendingSend) pendingSend = S;
+    syncAll();
+  });
   syncAll();
 }
 

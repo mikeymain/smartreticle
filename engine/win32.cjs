@@ -103,6 +103,8 @@ function clipRect() {
 }
 
 const keyDown = (vk) => (GetAsyncKeyState(vk) & 0x8000) !== 0;
+// Down now, or pressed since the previous poll: a tap shorter than the poll interval still counts once.
+const keyHit = (vk) => (GetAsyncKeyState(vk) & 0x8001) !== 0;
 
 // pid -> exe name (no ".exe"), from a process snapshot. Never opens the target process, so it still works
 // when a game's anti-cheat or admin rights would refuse OpenProcess.
@@ -144,7 +146,7 @@ const setExStyle = (hwnd, v) => SetWindowLongW(hwnd, GWL_EXSTYLE, v | 0);
 const setPos = (hwnd, x, y, w, h, flags, after = 0) => SetWindowPos(hwnd, after, x, y, w, h, flags);
 
 module.exports = {
-  foregroundWindow, windowPid, className, clientCenter, windowRect, monitorRect, cursor, clipRect, keyDown,
+  foregroundWindow, windowPid, className, clientCenter, windowRect, monitorRect, cursor, clipRect, keyDown, keyHit,
   isMinimized: (h) => IsIconic(h), shellWindow: () => GetShellWindow(), processNames, windowedProcessNames,
   getStyle, getExStyle, setStyle, setExStyle, setPos, WS, WS_EX, SWP
 };

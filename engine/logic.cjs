@@ -47,6 +47,15 @@ function decide({ detection, cursorShown, softMenu, aiming, clipped }) {
   return { show: true, reason: 'in game' };
 }
 
+// Detection loop rates. Full rate only while a target game is focused or the crosshair is up, so menus still hide
+// it within a frame. Elsewhere the loop only has to catch the toggle hotkey, which a 50 ms poll still sees.
+const FAST_TICK_MS = 16;
+const IDLE_TICK_MS = 50;
+
+function nextTickMs({ gameFocused, visible }) {
+  return gameFocused || visible ? FAST_TICK_MS : IDLE_TICK_MS;
+}
+
 // Zero-size counts: Division 2 clips to the single point at the screen centre ([960,540,960,540]).
 function isTinyClip(clip) {
   const w = clip.right - clip.left, h = clip.bottom - clip.top;
@@ -118,5 +127,5 @@ class ComboWatcher {
 
 module.exports = {
   VisibilityGate, SoftCursorTracker, decide, isTinyClip, normalizeExe, isListedGame, NON_GAMES,
-  keyCode, parseCombo, ComboWatcher, RECENTER_RADIUS, TINY_CLIP
+  keyCode, parseCombo, ComboWatcher, RECENTER_RADIUS, TINY_CLIP, nextTickMs, FAST_TICK_MS, IDLE_TICK_MS
 };

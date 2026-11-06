@@ -4,6 +4,7 @@ const win = require('./win32.cjs');
 const { SoftCursorTracker, decide, isTinyClip, isListedGame, NON_GAMES } = require('./logic.cjs');
 
 const NAME_CACHE_MS = 30000;
+const MISS_REFRESH_MS = 1000; // a pid that never resolves must not force a full snapshot every tick
 const DESKTOP_CLASSES = new Set(['Progman', 'WorkerW', 'Shell_TrayWnd']);
 
 class Detector {
@@ -11,20 +12,27 @@ class Detector {
     this.ownPid = ownPid;
     this.names = new Map();
     this.namesAt = 0;
+    this.missedAt = new Map();
     this.soft = new SoftCursorTracker();
   }
 
   processName(pid) {
     const now = Date.now();
-    if (now - this.namesAt > NAME_CACHE_MS || !this.names.has(pid)) {
-      // A miss usually means a newly started game, so refresh the whole snapshot once.
+    const stale = now - this.namesAt > NAME_CACHE_MS;
+    // A first miss usually means a newly started game, so refresh at once; repeat misses for the same pid wait.
+    const retry = !this.names.has(pid) && now - (this.missedAt.get(pid) || 0) > MISS_REFRESH_MS;
+    if (stale || retry) {
       this.names = win.processNames();
       this.namesAt = now;
     }
-    return this.names.get(pid) || '?';
+    if (this.names.has(pid)) return this.names.get(pid);
+    if (this.missedAt.size > 64) this.missedAt.clear();
+    this.missedAt.set(pid, now);
+    return '?';
   }
 
   isTargetGame(hwnd, name, detection) {
+    if (name === '?') return false; // unknown process: never treat as a game or force it borderless
     if (isListedGame(name, detection.games)) return true;
     if (!detection.autoFullscreen || NON_GAMES.has(name.toLowerCase())) return false;
     if (hwnd === win.shellWindow() || DESKTOP_CLASSES.has(win.className(hwnd))) return false;

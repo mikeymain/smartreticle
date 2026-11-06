@@ -138,6 +138,13 @@ test('mouse-lock rule: Division 2 map drag (cursor hidden, mouse free) hides; ga
   assert.equal(L.decide({ detection: det({ requireMouseLock: false }), cursorShown: false, softMenu: false, aiming: false, clipped: false }).show, true);
 });
 
+test('loop runs at full rate only with the game focused or the crosshair up', () => {
+  assert.equal(L.nextTickMs({ gameFocused: true, visible: false }), L.FAST_TICK_MS);
+  assert.equal(L.nextTickMs({ gameFocused: false, visible: true }), L.FAST_TICK_MS);
+  assert.equal(L.nextTickMs({ gameFocused: false, visible: false }), L.IDLE_TICK_MS);
+  assert.ok(L.IDLE_TICK_MS > L.FAST_TICK_MS);
+});
+
 test('tiny clip detection', () => {
   assert.equal(L.isTinyClip({ left: 960, top: 540, right: 960, bottom: 540 }), true); // Division 2 gameplay
   assert.equal(L.isTinyClip({ left: -1920, top: 0, right: 1920, bottom: 1080 }), false); // Division 2 map
