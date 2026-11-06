@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+<title>SmartReticle overlay</title>
+<style>
+  /* The window is transparent and click-through; only the canvas paints. */
+  html, body { margin: 0; background: transparent; overflow: hidden; width: 100%; height: 100%; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
+  canvas.hidden { visibility: hidden; }
+</style>
+</head>
+<body>
+<canvas id="c" class="hidden"></canvas>
+<script src="crosshair-draw.js"></script>
+<script src="overlay.js"></script>
+</body>
+</html>

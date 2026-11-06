@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>SmartReticle</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"></div>
+
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark glass" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none" stroke="#b6ff3b" stroke-width="2.2" stroke-linecap="round">
+            <circle cx="16" cy="16" r="9.5"/><path d="M16 2.5v7M16 22.5v7M2.5 16h7M22.5 16h7"/><circle cx="16" cy="16" r="1.4" fill="#b6ff3b" stroke="none"/>
+          </svg>
+        </div>
+        <div>
+         <h1>SmartReticle</h1>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span id="status-pill" class="status glass" aria-live="polite">Starting…</span>
+        <label class="switch big power glass" title="Overlay on/off">
+          <input id="enabled" type="checkbox">
+          <span class="track"><span class="thumb"></span></span>
+          <span class="switch-label">Overlay</span>
+        </label>
+      </div>
+    </header>
+
+    <div class="tab-slot" id="tab-slot">
+      <nav class="tabs" id="tabs" role="tablist" aria-label="Sections">
+        <button type="button" class="tab current" role="tab" data-tab="crosshair">Crosshair</button>
+        <button type="button" class="tab" role="tab" data-tab="settings">Settings</button>
+      </nav>
+    </div>
+
+    <!-- Crosshair ---------------------------------------------------------->
+    <section class="pane crosshair-pane" data-pane="crosshair">
+      <div class="stack">
+        <div class="card preview-card">
+          <div class="preview-head">
+            <div class="chips" id="scene-chips" role="radiogroup" aria-label="Preview background"></div>
+            <div class="chips" id="zoom-chips" role="radiogroup" aria-label="Preview zoom"></div>
+          </div>
+          <canvas id="preview" class="preview" aria-label="Crosshair preview"></canvas>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <p class="eyebrow">Your crosshairs</p>
+         </div>
+          <div class="chips" id="profile-chips"></div>
+          <label class="field-row">Name
+            <input id="profile-name" type="text" maxlength="32" autocomplete="off">
+          </label>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><p class="eyebrow">Start from a preset</p></div>
+          <div class="chips" id="preset-chips"></div>
+          <div class="share-row">
+            <button id="share-copy" class="secondary" type="button">Copy share code</button>
+            <button id="share-paste" class="secondary" type="button">Paste share code</button>
+          </div>
+          <p id="share-msg" class="hint" aria-live="polite"></p>
+        </div>
+
+      </div>
+
+      <div class="stack">
+        <div class="card editor-card">
+          <p class="eyebrow">Shape</p>
+          <div class="style-grid" id="style-grid" role="radiogroup" aria-label="Crosshair shape"></div>
+
+          <p class="eyebrow">Colour</p>
+          <div class="colour-row">
+            <div class="swatches" id="swatches"></div>
+            <label class="colour-pick" title="Pick any colour">
+              <input id="color" type="color" aria-label="Custom crosshair colour">
+              <span class="colour-pick-dot" id="color-dot"></span>
+            </label>
+          </div>
+
+          <div class="sliders" id="sliders"></div>
+
+          <div class="outline-row">
+            <label class="switch">
+              <input id="outline" type="checkbox">
+              <span class="track"><span class="thumb"></span></span>
+              <span class="switch-label">Outline</span>
+            </label>
+            <label class="outline-colour" title="Outline colour">
+              <span>Colour</span>
+              <span class="colour-pick small">
+                <input id="outline-color" type="color" aria-label="Outline colour">
+                <span class="colour-pick-dot" id="outline-dot"></span>
+              </span>
+            </label>
+          </div>
+          <div class="sliders" id="outline-sliders"></div>
+
+          <p class="eyebrow">Position</p>
+          <div class="sliders" id="offset-sliders"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Settings ------------------------------------------------------------->
+    <section class="pane settings-pane" data-pane="settings" hidden>
+      <div class="card setup-card">
+        <div class="card-head">
+          <p class="eyebrow">Division 2 setup</p>
+       </div>
+        <ol class="steps">
+          <li><strong>Windowed mode</strong> Native resolution.</li>
+          <li><strong>Force borderless on</strong></li>
+          <li><strong>Play</strong> <strong id="hotkey-name">F8</strong> toggles the overlay.</li>
+        </ol>
+      </div>
+      <div class="stack">
+      <div class="card">
+        <div class="card-head">
+          <p class="eyebrow">Games</p>
+       </div>
+        <div class="chips" id="game-chips"></div>
+        <div class="add-row">
+          <input id="game-input" type="text" placeholder="Add exe name, e.g. TheDivision2" autocomplete="off">
+          <button id="game-add" class="primary small" type="button">Add</button>
+          <select id="game-running" aria-label="Add a running game">
+            <option value="">Pick a running app…</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card rules">
+        <p class="eyebrow">Rules</p>
+        <div id="rule-rows"></div>
+      </div>
+
+      </div>
+
+      <div class="stack">
+      <div class="card">
+        <p class="eyebrow">Aiming</p>
+        <div class="segmented" id="aim-mode" role="radiogroup" aria-label="Aim behaviour"></div>
+        <div class="key-row">
+          <span>Aim key</span>
+          <button id="aim-key" class="key-capture" type="button"></button>
+        </div>
+        <div class="sliders" id="delay-slider"></div>
+      </div>
+      <div class="card">
+        <p class="eyebrow">Hotkey</p>
+        <div class="key-row">
+          <span>Toggle overlay</span>
+          <button id="toggle-key" class="key-capture" type="button"></button>
+        </div>
+      </div>
+      <div class="card">
+        <p class="eyebrow">Startup</p>
+        <div id="app-rows"></div>
+     </div>
+      <div class="card">
+        <p class="eyebrow">Troubleshooting</p>
+        <div class="log-row">
+          <label class="switch">
+            <input id="debug-log" type="checkbox">
+            <span class="track"><span class="thumb"></span></span>
+            <span class="switch-label">Write debug log</span>
+          </label>
+          <button id="open-log" class="secondary" type="button">Open log</button>
+        </div>
+     </div>
+      </div>
+      <p id="version" class="footer-note"></p>
+    </section>
+  </main>
+
+  <script src="crosshair-draw.js"></script>
+  <script src="ui-controls.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "smartreticle",
+  "version": "2.0.0",
+  "description": "A crosshair overlay that shows only while you are actually playing. Built for The Division 2.",
+  "main": "main.cjs",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test \"test/*.test.cjs\"",
+    "package": "electron-packager . SmartReticle --platform=win32 --arch=x64 --out=dist --overwrite --prune=true --ignore=\"^/(dist|prototype-csharp|tests|test|bin|scripts)($|/)\"",
+    "snapshot": "electron scripts/snapshot.cjs snapshots"
+  },
+  "dependencies": {
+    "koffi": "^3.2.1"
+  },
+  "devDependencies": {
+    "electron": "^44.2.0",
+    "electron-packager": "^17.1.2"
+  }
+}
