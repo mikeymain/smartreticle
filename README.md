@@ -53,3 +53,7 @@ It never injects into or reads the game's memory. Check the game's rules anyway.
 | `prototype-csharp/` | The first native version. Its `bin\CursorLab.exe game\|menu\|softmenu\|rawgame\|windowed` fakes each game state for testing. |
 
 `npm run package` builds `dist\SmartReticle-win32-x64`.
+
+## License
+
+[MIT](LICENSE)
