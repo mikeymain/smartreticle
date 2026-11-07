@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 
-namespace SmartReticle
+namespace SmartXair
 {
     /// <summary>
     ///   ReticleProbe.exe unit                 pure-logic tests (config, share codes, keys, debounce, renderer)

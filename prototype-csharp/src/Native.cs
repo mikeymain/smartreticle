@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace SmartReticle
+namespace SmartXair
 {
     /// <summary>Win32 interop. Read-only queries plus our own window management; never touches game memory.</summary>
     internal static class Native

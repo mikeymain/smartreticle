@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace SmartReticle
+namespace SmartXair
 {
     public enum CrosshairStyle { Cross, CrossDot, TShape, Dot, Circle, CircleDot, CircleCross }
 
@@ -135,7 +135,7 @@ namespace SmartReticle
 
         public static string Dir
         {
-            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SmartReticle"); }
+            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SmartXair"); }
         }
 
         public static string FilePath { get { return Path.Combine(Dir, "config.ini"); } }

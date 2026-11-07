@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace SmartReticle
+namespace SmartXair
 {
     /// <summary>
     /// Fake "game" window that reproduces each cursor state a real game uses, so the detector can be tested without one.

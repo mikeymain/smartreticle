@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace SmartReticle
+namespace SmartXair
 {
     internal sealed class SettingsForm : Form
     {
@@ -25,7 +25,7 @@ namespace SmartReticle
         {
             this.app = app;
             cfg = app.Config;
-            Text = "SmartReticle - Settings";
+            Text = "SmartXair - Settings";
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             AutoScaleMode = AutoScaleMode.Font;
@@ -292,7 +292,7 @@ namespace SmartReticle
             var s = AppConfig.FromShareCode(Clipboard.GetText());
             if (s == null)
             {
-                MessageBox.Show(this, "Clipboard does not hold a SmartReticle share code (starts with SR1-).", "SmartReticle");
+                MessageBox.Show(this, "Clipboard does not hold a SmartXair share code (starts with SR1-).", "SmartXair");
                 return;
             }
             cfg.Crosshair = s;

@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace SmartReticle
+namespace SmartXair
 {
     internal static class Program
     {
@@ -11,11 +11,11 @@ namespace SmartReticle
         private static void Main(string[] args)
         {
             bool created;
-            using (var mutex = new Mutex(true, "SmartReticle.SingleInstance", out created))
+            using (var mutex = new Mutex(true, "SmartXair.SingleInstance", out created))
             {
                 if (!created)
                 {
-                    MessageBox.Show("SmartReticle is already running (check the system tray).", "SmartReticle");
+                    MessageBox.Show("SmartXair is already running (check the system tray).", "SmartXair");
                     return;
                 }
                 Application.EnableVisualStyles();
@@ -101,7 +101,7 @@ namespace SmartReticle
         private void UpdateTray()
         {
             enabledItem.Checked = config.Enabled;
-            tray.Text = "SmartReticle - " + (config.Enabled ? "on" : "off") + " (" + config.Detection.ToggleHotkey + " toggles)";
+            tray.Text = "SmartXair - " + (config.Enabled ? "on" : "off") + " (" + config.Detection.ToggleHotkey + " toggles)";
         }
 
         private void Tick()
@@ -110,7 +110,7 @@ namespace SmartReticle
 
             var r = detector.Evaluate(config.Detection, aimKey);
             if (config.Detection.ForceBorderless && r.Window != IntPtr.Zero) borderless.TryApply(r.Window);
-            if (r.Reason != "SmartReticle window focused") LastExternal = r;
+            if (r.Reason != "SmartXair window focused") LastExternal = r;
 
             bool want = config.Enabled && r.Show;
             bool visible = gate.Update(want, config.Detection.ShowDelayMs, DateTime.UtcNow);

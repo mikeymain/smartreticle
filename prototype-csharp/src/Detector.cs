@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace SmartReticle
+namespace SmartXair
 {
     public sealed class DetectionResult
     {
@@ -48,7 +48,7 @@ namespace SmartReticle
         {
             "explorer", "chrome", "msedge", "firefox", "brave", "opera", "vlc", "mpc-hc64", "PotPlayerMini64",
             "ApplicationFrameHost", "SearchHost", "ShellExperienceHost", "StartMenuExperienceHost", "LockApp",
-            "Discord", "steamwebhelper", "obs64", "SmartReticle", "CursorLab"
+            "Discord", "steamwebhelper", "obs64", "SmartXair", "CursorLab"
         };
 
         private readonly uint ownPid = (uint)Process.GetCurrentProcess().Id;
@@ -66,7 +66,7 @@ namespace SmartReticle
 
             uint pid;
             Native.GetWindowThreadProcessId(hwnd, out pid);
-            if (pid == ownPid) return Hide(r, "SmartReticle window focused");
+            if (pid == ownPid) return Hide(r, "SmartXair window focused");
             r.Process = ProcessName(pid);
 
             if (Native.IsIconic(hwnd)) return Hide(r, "game minimised");

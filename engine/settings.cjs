@@ -129,6 +129,15 @@ function load(file) {
   }
 }
 
+// The app was called SmartReticle. Copy its settings on first run under the new name; never overwrite.
+/** @returns {boolean} true if the old file was copied */
+function adopt(oldFile, newFile) {
+  if (fs.existsSync(newFile) || !fs.existsSync(oldFile)) return false;
+  fs.mkdirSync(path.dirname(newFile), { recursive: true });
+  fs.copyFileSync(oldFile, newFile);
+  return true;
+}
+
 // Write-then-rename so a crash mid-save cannot leave half a file.
 function save(file, settings) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -165,5 +174,5 @@ function fromShareCode(code) {
 
 module.exports = {
   STYLES, AIM_MODES, DEFAULT_CROSSHAIR, PRESETS, defaults, clean, cleanCrosshair, cleanDetection,
-  activeCrosshair, load, save, toShareCode, fromShareCode
+  activeCrosshair, load, save, adopt, toShareCode, fromShareCode
 };

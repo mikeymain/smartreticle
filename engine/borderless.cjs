@@ -39,7 +39,7 @@ class BorderlessForcer {
     win.setExStyle(hwnd, (win.getExStyle(hwnd) & ~EDGE_BITS) >>> 0);
     const w = mon.right - mon.left, h = mon.bottom - mon.top;
     const ok = win.setPos(hwnd, mon.left, mon.top, w, h, win.SWP.FRAMECHANGED | win.SWP.NOOWNERZORDER | win.SWP.NOACTIVATE);
-    this.log(`Borderless: ${ok ? 'applied' : 'FAILED (game may run as admin; run SmartReticle as admin too)'} ` +
+    this.log(`Borderless: ${ok ? 'applied' : 'FAILED (game may run as admin; run SmartXair as admin too)'} ` +
       `to window ${hwnd} -> ${w}x${h} at ${mon.left},${mon.top} (attempt ${n + 1})`);
     return ok;
   }

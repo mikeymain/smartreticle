@@ -75,6 +75,19 @@ test('settings save and load round-trip on disk', () => {
   assert.deepEqual(store.load(file), s);
 });
 
+test('old SmartReticle settings are copied once and never overwrite new ones', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sr-'));
+  const oldFile = path.join(dir, 'smartreticle', 'settings.json');
+  const newFile = path.join(dir, 'smartxair', 'settings.json');
+  assert.equal(store.adopt(oldFile, newFile), false);
+  store.save(oldFile, store.defaults());
+  assert.equal(store.adopt(oldFile, newFile), true);
+  assert.deepEqual(store.load(newFile), store.defaults());
+  fs.writeFileSync(newFile, '{"enabled":false}');
+  assert.equal(store.adopt(oldFile, newFile), false);
+  assert.equal(store.load(newFile).enabled, false);
+});
+
 test('key combos parse', () => {
   assert.deepEqual(L.parseCombo('F8'), [0x77]);
   assert.deepEqual(L.parseCombo('Ctrl+Shift+X'), [0x11, 0x10, 0x58]);

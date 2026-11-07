@@ -49,7 +49,7 @@ class Detector {
     const hwnd = win.foregroundWindow();
     if (!hwnd) return { ...r, reason: 'no focused window' };
     const pid = win.windowPid(hwnd);
-    if (pid === this.ownPid) return { ...r, reason: 'SmartReticle focused', own: true };
+    if (pid === this.ownPid) return { ...r, reason: 'SmartXair focused', own: true };
     const name = this.processName(pid);
     if (win.isMinimized(hwnd)) return { ...r, process: name, reason: 'game minimised' };
     if (!this.isTargetGame(hwnd, name, detection)) return { ...r, process: name, reason: 'tabbed out / not a game' };

@@ -68,7 +68,7 @@ function selectTab(name) {
   if (name === 'crosshair') drawPreview();
   tabListeners.forEach(fn => fn(name));
 }
-window.SmartReticleTabs = {
+window.SmartXairTabs = {
   select: selectTab,
   onChange: (fn) => tabListeners.push(fn),
   list: () => [...document.querySelectorAll('.tab')].map(t => ({ name: t.dataset.tab, label: t.textContent }))

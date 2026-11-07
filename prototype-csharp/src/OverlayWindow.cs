@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace SmartReticle
+namespace SmartXair
 {
     /// <summary>
     /// Click-through, never-focused, per-pixel-alpha window that holds the crosshair bitmap.
@@ -23,7 +23,7 @@ namespace SmartReticle
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
-            Text = "SmartReticle Overlay";
+            Text = "SmartXair Overlay";
         }
 
         protected override CreateParams CreateParams

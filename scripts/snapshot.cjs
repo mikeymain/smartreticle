@@ -11,7 +11,7 @@ const wait = (ms) => new Promise(r => setTimeout(r, ms));
 
 app.whenReady().then(async () => {
   await wait(4000);
-  const win = BrowserWindow.getAllWindows().find(w => w.getTitle() === 'SmartReticle');
+  const win = BrowserWindow.getAllWindows().find(w => w.getTitle() === 'SmartXair');
   if (!win) { console.error('Settings window not found'); app.exit(1); return; }
   win.show();
   // SNAP_WIDTH=940 checks the narrowest allowed window.

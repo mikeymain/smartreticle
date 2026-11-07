@@ -1,10 +1,12 @@
-# SmartReticle
+# SmartXair
 
 A crosshair overlay for Windows that shows only while you are actually playing. Built for **The Division 2**. It is an Electron app with a tactical HUD interface.
 
+Formerly SmartReticle. On first start, SmartXair copies the old settings from `%APPDATA%\smartreticle`.
+
 ## Run it
 
-- Packaged: `dist\SmartReticle-win32-x64\SmartReticle.exe`
+- Packaged: `dist\SmartXair-win32-x64\SmartXair.exe`
 - From source: `npm install`, then `npm start`
 
 If npm's install-script blocker skips Electron's download, run `node node_modules/electron/install.js` once.
@@ -12,10 +14,10 @@ If npm's install-script blocker skips Electron's download, run `node node_module
 ## Division 2 setup
 
 1. In the game's video settings, set the window mode to **Windowed** at your monitor's resolution.
-2. Leave **Force borderless** on (Settings tab). SmartReticle removes the window frame and stretches the game over the monitor. Division 2 has no borderless mode, and no overlay can draw over exclusive fullscreen.
+2. Leave **Force borderless** on (Settings tab). SmartXair removes the window frame and stretches the game over the monitor. Division 2 has no borderless mode, and no overlay can draw over exclusive fullscreen.
 3. Play. The crosshair hides when you alt-tab, minimise the game, or open a menu that shows the mouse cursor. `F8` toggles it at any time, and the key still reaches the game.
 
-If the debug log says `Borderless: FAILED`, the game runs as administrator. Run SmartReticle as administrator too.
+If the debug log says `Borderless: FAILED`, the game runs as administrator. Run SmartXair as administrator too.
 
 ## Tabs
 
@@ -33,7 +35,7 @@ Closing the window leaves the overlay running from the tray. Use the tray menu t
 
 ## Safety
 
-SmartReticle uses only public Windows calls:
+SmartXair uses only public Windows calls:
 - the focused window and its process name (from a process snapshot, never `OpenProcess`)
 - the cursor state and clip rectangle
 - key state
@@ -52,7 +54,7 @@ It never injects into or reads the game's memory. Check the game's rules anyway.
 | `scripts/snapshot.cjs` | `npm run snapshot`: screenshots every tab |
 | `prototype-csharp/` | The first native version. Its `bin\CursorLab.exe game\|menu\|softmenu\|rawgame\|windowed` fakes each game state for testing. |
 
-`npm run package` builds `dist\SmartReticle-win32-x64`.
+`npm run package` builds `dist\SmartXair-win32-x64`.
 
 ## License
 

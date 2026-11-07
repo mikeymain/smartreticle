@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SmartReticle
+namespace SmartXair
 {
     /// <summary>
     /// Turns a windowed game into borderless fullscreen: strips the title bar/frame and sizes it to its monitor.
@@ -48,7 +48,7 @@ namespace SmartReticle
             bool ok = Native.SetWindowPos(hwnd, Native.HWND_TOP, mon.Left, mon.Top, mon.Width, mon.Height,
                 Native.SWP_FRAMECHANGED | Native.SWP_NOOWNERZORDER | Native.SWP_NOACTIVATE);
 
-            Log.Write("Borderless: " + (ok ? "applied" : "FAILED (game may run as admin; run SmartReticle as admin too)") +
+            Log.Write("Borderless: " + (ok ? "applied" : "FAILED (game may run as admin; run SmartXair as admin too)") +
                       " to window " + hwnd + " -> " + mon.Width + "x" + mon.Height + " at " + mon.Left + "," + mon.Top +
                       " (attempt " + (n + 1) + ")");
             return ok;

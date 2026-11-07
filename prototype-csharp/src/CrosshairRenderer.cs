@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
-namespace SmartReticle
+namespace SmartXair
 {
     /// <summary>Draws a crosshair into a square ARGB bitmap whose centre pixel is the aim point.</summary>
     public static class CrosshairRenderer

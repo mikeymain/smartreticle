@@ -48,7 +48,7 @@ if (!app.requestSingleInstanceLock()) {
   function createMainWindow() {
     const w = new BrowserWindow({
       width: 1120, height: 760, minWidth: 940, minHeight: 640, show: false,
-      backgroundColor: '#0b0d0e', title: 'SmartReticle', icon: appIcon(64), autoHideMenuBar: true,
+      backgroundColor: '#0b0d0e', title: 'SmartXair', icon: appIcon(64), autoHideMenuBar: true,
       webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true }
     });
     w.setMenu(null);
@@ -127,16 +127,16 @@ if (!app.requestSingleInstanceLock()) {
   // ---- tray -------------------------------------------------------------
 
   function appIcon(size) {
-    return nativeImage.createFromPath(path.join(__dirname, 'assets', 'smartreticle.png'))
+    return nativeImage.createFromPath(path.join(__dirname, 'assets', 'smartxair.png'))
       .resize({ width: size, height: size });
   }
 
   function refreshTray() {
     if (!tray) return;
     const d = settings.detection;
-    tray.setToolTip(`SmartReticle - ${settings.enabled ? 'on' : 'off'} (${d.toggleHotkey} toggles)`);
+    tray.setToolTip(`SmartXair - ${settings.enabled ? 'on' : 'off'} (${d.toggleHotkey} toggles)`);
     tray.setContextMenu(Menu.buildFromTemplate([
-      { label: 'Open SmartReticle', click: showMainWindow },
+      { label: 'Open SmartXair', click: showMainWindow },
       { label: 'Overlay enabled', type: 'checkbox', checked: settings.enabled, click: () => setEnabled(!settings.enabled) },
       { type: 'separator' },
       { label: 'Quit', click: () => app.quit() }
@@ -238,6 +238,10 @@ if (!app.requestSingleInstanceLock()) {
   app.whenReady().then(() => {
     log = createLog(logFile());
     borderless = new BorderlessForcer(log);
+    try {
+      const old = path.join(app.getPath('appData'), 'smartreticle', 'settings.json');
+      if (store.adopt(old, settingsFile())) log('Settings copied from SmartReticle: ' + old);
+    } catch (error) { log('Settings copy from SmartReticle failed: ' + error.message); }
     settings = store.load(settingsFile());
     registerIpc();
     tray = new Tray(appIcon(32));

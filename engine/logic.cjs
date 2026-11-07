@@ -74,7 +74,7 @@ function normalizeExe(value) {
 const NON_GAMES = new Set([
   'explorer', 'chrome', 'msedge', 'firefox', 'brave', 'opera', 'vlc', 'mpc-hc64', 'potplayermini64',
   'applicationframehost', 'searchhost', 'shellexperiencehost', 'startmenuexperiencehost', 'lockapp',
-  'discord', 'steamwebhelper', 'obs64', 'electron', 'smartreticle', 'cursorlab'
+  'discord', 'steamwebhelper', 'obs64', 'electron', 'smartxair', 'smartreticle', 'cursorlab'
 ]);
 
 function isListedGame(processName, games) {
